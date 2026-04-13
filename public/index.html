@@ -16,6 +16,15 @@
 html{scroll-behavior:smooth}
 body{background:var(--deep);color:var(--text);font-family:'Jost',sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
 
+/* ═══ THEME MORPH TRANSITIONS ═══ */
+body{transition:opacity 0.6s ease}
+nav,#services,#booking,#destinations,#gallery,#mag-strip{transition:background 1.5s ease,border-color 1.5s ease}
+.oracle-btn,.cta-primary,.submit,.mbtn-p,.nav-book,.feat-btn{transition:background 1.2s ease,color 1.2s ease,transform 0.3s ease,box-shadow 0.3s ease !important}
+.logo em,.mag-source,.dest-ctry,.dt-ctry,.feat-ctry,.sec-pre,.fh{transition:color 1.2s ease !important}
+.vibe-tag,.dt-price,.rev-dest-badge,.mag-pill{transition:background 1.2s ease,border-color 1.2s ease,color 1.2s ease !important}
+.scroll-line,.loader-bar::after{transition:background 1.2s ease}
+#dest-theme-badge{opacity:0.7;font-family:'Jost',sans-serif;letter-spacing:0.3em}
+
 #cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:difference}
 #cursor-ring{position:fixed;width:40px;height:40px;border:1px solid rgba(201,169,110,0.5);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width 0.3s,height 0.3s,border-color 0.3s}
 #noise{position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:9998;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -677,6 +686,163 @@ REVIEWS.forEach(r => {
   revGrid.appendChild(card);
 });
 
+// ═══ DESTINATION THEME ENGINE ═══
+const DEST_THEMES = {
+  santorini:  { accent:'#4A90D9', accent2:'#F5EFE6', bg_dark:'#050D1A', bg_mid:'#0A1828', hero_tint:'rgba(30,60,120,0.15)', gold:'#C9A96E', name:'Santorini', emoji:'🏛️' },
+  maldives:   { accent:'#00C4D4', accent2:'#E0F8FA', bg_dark:'#021218', bg_mid:'#041E28', hero_tint:'rgba(0,180,200,0.12)', gold:'#7EEAEA', name:'Maldives', emoji:'🌊' },
+  kyoto:      { accent:'#C084A0', accent2:'#FAE8F0', bg_dark:'#120810', bg_mid:'#1E0E18', hero_tint:'rgba(180,80,140,0.12)', gold:'#E8A8C0', name:'Kyoto', emoji:'🌸' },
+  morocco:    { accent:'#E8922A', accent2:'#FDF0E0', bg_dark:'#150800', bg_mid:'#221205', hero_tint:'rgba(220,120,20,0.15)', gold:'#E8B86D', name:'Marrakech', emoji:'🏺' },
+  dubai:      { accent:'#D4A840', accent2:'#FAF0D0', bg_dark:'#100C00', bg_mid:'#1A1400', hero_tint:'rgba(200,160,20,0.12)', gold:'#D4A840', name:'Dubai', emoji:'🌇' },
+  coorg:      { accent:'#5A8A3C', accent2:'#E8F4E0', bg_dark:'#040C04', bg_mid:'#081408', hero_tint:'rgba(60,120,40,0.15)', gold:'#8DC86A', name:'Coorg', emoji:'☕' },
+  bali:       { accent:'#E07B4A', accent2:'#FDE8D8', bg_dark:'#120600', bg_mid:'#1E0C04', hero_tint:'rgba(200,90,40,0.15)', gold:'#E8A870', name:'Bali', emoji:'🌺' },
+  iceland:    { accent:'#7AB8D4', accent2:'#E8F4FA', bg_dark:'#040C14', bg_mid:'#08141E', hero_tint:'rgba(80,160,200,0.12)', gold:'#A8D4E8', name:'Iceland', emoji:'🌌' },
+  japan:      { accent:'#C084A0', accent2:'#FAE8F0', bg_dark:'#120810', bg_mid:'#1E0E18', hero_tint:'rgba(180,80,140,0.12)', gold:'#E8A8C0', name:'Japan', emoji:'🗻' },
+  europe:     { accent:'#7A8FC0', accent2:'#E8ECF8', bg_dark:'#080A14', bg_mid:'#101420', hero_tint:'rgba(80,100,180,0.12)', gold:'#B0BCDC', name:'Europe', emoji:'🗼' },
+  paris:      { accent:'#9A7AB0', accent2:'#F0E8F8', bg_dark:'#0A0814', bg_mid:'#14101E', hero_tint:'rgba(130,80,160,0.12)', gold:'#C8A8E0', name:'Paris', emoji:'🥐' },
+  beach:      { accent:'#00C4D4', accent2:'#E0F8FA', bg_dark:'#021218', bg_mid:'#041E28', hero_tint:'rgba(0,180,200,0.1)', gold:'#7EEAEA', name:'Beach', emoji:'🏖️' },
+  mountains:  { accent:'#6A9AB0', accent2:'#E4EEF4', bg_dark:'#060C10', bg_mid:'#0C1620', hero_tint:'rgba(60,120,160,0.12)', gold:'#A0C4D8', name:'Mountains', emoji:'⛰️' },
+  swiss:      { accent:'#A0C0D8', accent2:'#EAF2F8', bg_dark:'#060C12', bg_mid:'#0C1620', hero_tint:'rgba(100,160,200,0.1)', gold:'#C0D8EC', name:'Switzerland', emoji:'🏔️' },
+  newzealand: { accent:'#5A9A60', accent2:'#E4F0E4', bg_dark:'#040C04', bg_mid:'#081408', hero_tint:'rgba(50,130,60,0.12)', gold:'#88C080', name:'New Zealand', emoji:'🌿' },
+};
+
+const DEFAULT_THEME = { accent:'#C9A96E', accent2:'#F5EFE6', bg_dark:'#060A14', bg_mid:'#0E2140', hero_tint:'rgba(0,0,0,0)', gold:'#C9A96E', name:'', emoji:'' };
+
+let currentTheme = null;
+let themeTransitionTimeout = null;
+
+function applyTheme(destKey, data) {
+  const theme = DEST_THEMES[destKey] || DEFAULT_THEME;
+  if (currentTheme === destKey) return;
+  currentTheme = destKey;
+
+  // Override with Claude's custom colors if provided
+  const accent  = (data && data.theme && data.theme.accent)   || theme.accent;
+  const accent2 = (data && data.theme && data.theme.accent2)  || theme.accent2;
+  const bgDark  = (data && data.theme && data.theme.bg_dark)  || theme.bg_dark;
+  const bgMid   = (data && data.theme && data.theme.bg_mid)   || theme.bg_mid;
+
+  // 1. Fade out everything
+  document.body.style.transition = 'opacity 0.6s ease';
+  document.body.style.opacity = '0.3';
+
+  setTimeout(() => {
+    // 2. Swap hero background image
+    const heroImg = IMGS[destKey] || IMGS[Object.keys(IMGS)[Math.floor(Math.random()*Object.keys(IMGS).length)]];
+    // Inject a full-page theme layer behind everything
+    let themeLayer = document.getElementById('theme-layer');
+    if (!themeLayer) {
+      themeLayer = document.createElement('div');
+      themeLayer.id = 'theme-layer';
+      themeLayer.style.cssText = `position:fixed;inset:0;z-index:-1;transition:all 1.5s ease;pointer-events:none`;
+      document.body.prepend(themeLayer);
+    }
+    themeLayer.style.background = `
+      radial-gradient(ellipse at 20% 20%, ${accent}22 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, ${accent2}11 0%, transparent 50%),
+      linear-gradient(180deg, ${bgDark} 0%, ${bgMid} 50%, ${bgDark} 100%)
+    `;
+
+    // 3. Update CSS variables
+    const root = document.documentElement;
+    root.style.setProperty('--gold', accent);
+    root.style.setProperty('--deep', bgDark);
+    root.style.setProperty('--ocean', bgMid);
+    root.style.setProperty('--accent2', accent2);
+
+    // 4. Update hero slideshow — push destination to front
+    if (IMGS[destKey]) {
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.dot');
+      // Find matching slide or inject
+      let found = false;
+      slides.forEach((s, i) => {
+        const img = s.querySelector('.hero-slide-img');
+        if (img && img.style.backgroundImage.includes(IMGS[destKey])) {
+          slides[currentSlide]?.classList.remove('active');
+          dots[currentSlide]?.classList.remove('active');
+          currentSlide = i;
+          s.classList.add('active');
+          dots[i]?.classList.add('active');
+          document.getElementById('slide-location').textContent = theme.name;
+          found = true;
+        }
+      });
+      if (!found) {
+        // Swap first slide to this destination
+        const firstSlide = slides[0];
+        if (firstSlide) {
+          const img = firstSlide.querySelector('.hero-slide-img');
+          if (img) img.style.backgroundImage = `url('${IMGS[destKey]}')`;
+          slides[currentSlide]?.classList.remove('active');
+          dots[currentSlide]?.classList.remove('active');
+          currentSlide = 0;
+          firstSlide.classList.add('active');
+          dots[0]?.classList.add('active');
+          document.getElementById('slide-location').textContent = theme.name;
+        }
+      }
+    }
+
+    // 5. Update nav logo color
+    document.querySelector('.logo em').style.color = accent;
+
+    // 6. Update scroll line
+    const scrollLine = document.querySelector('.scroll-line');
+    if (scrollLine) scrollLine.style.background = `linear-gradient(to bottom, ${accent}, transparent)`;
+
+    // 7. Pulse all gold elements to new accent
+    document.querySelectorAll('.oracle-btn, .cta-primary, .submit, .mbtn-p').forEach(el => {
+      el.style.background = accent;
+      el.style.color = bgDark;
+    });
+
+    // 8. Update vibe tags
+    document.querySelectorAll('.vibe-tag').forEach(el => {
+      el.style.borderColor = accent + '55';
+      el.style.color = accent;
+      el.style.background = accent + '15';
+    });
+
+    // 9. Destination badge in corner
+    let badge = document.getElementById('dest-theme-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'dest-theme-badge';
+      badge.style.cssText = `position:fixed;top:50%;right:0;transform:translateY(-50%);z-index:500;writing-mode:vertical-rl;font-family:'Jost',sans-serif;font-size:0.58rem;letter-spacing:0.35em;text-transform:uppercase;padding:1.2rem 0.6rem;border-left:1px solid;border-radius:8px 0 0 8px;transition:all 1s ease;pointer-events:none`;
+      document.body.appendChild(badge);
+    }
+    badge.style.color = accent;
+    badge.style.borderColor = accent + '40';
+    badge.style.background = bgDark + 'cc';
+    badge.textContent = (theme.emoji ? theme.emoji + '  ' : '') + (theme.name || '').toUpperCase();
+
+    // 10. Fade back in
+    document.body.style.opacity = '1';
+  }, 600);
+}
+
+function resetTheme() {
+  currentTheme = null;
+  document.body.style.opacity = '0.3';
+  setTimeout(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--gold', '#C9A96E');
+    root.style.setProperty('--deep', '#060A14');
+    root.style.setProperty('--ocean', '#0E2140');
+    const themeLayer = document.getElementById('theme-layer');
+    if (themeLayer) themeLayer.style.background = '';
+    document.querySelector('.logo em').style.color = '';
+    const scrollLine = document.querySelector('.scroll-line');
+    if (scrollLine) scrollLine.style.background = '';
+    document.querySelectorAll('.oracle-btn, .cta-primary, .submit, .mbtn-p').forEach(el => {
+      el.style.background = ''; el.style.color = '';
+    });
+    const badge = document.getElementById('dest-theme-badge');
+    if (badge) badge.textContent = '';
+    document.body.style.opacity = '1';
+  }, 400);
+}
+
 // ═══ CUSTOM CURSOR ═══
 const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
@@ -747,6 +913,12 @@ function renderResult(data){
   document.getElementById('oracle-loader').style.display='none';
   document.getElementById('oracle-result').style.display='block';
   setTimeout(()=>document.getElementById('oracle-result').scrollIntoView({behavior:'smooth',block:'start'}),100);
+
+  // ✦ APPLY DESTINATION THEME
+  if (data.destination_key) {
+    applyTheme(data.destination_key, data);
+  }
+
   const mb=document.getElementById('mag-bar');mb.innerHTML='';
   ['Condé Nast Traveler','National Geographic','Travel + Leisure','Lonely Planet','Vogue Travel'].forEach(m=>{const s=document.createElement('span');s.className='mag-pill';s.textContent=m;mb.appendChild(s)});
   document.getElementById('result-emotion').textContent=data.emotion_match||'';
@@ -774,6 +946,7 @@ window.resetOracle=function(){
   const btn=document.getElementById('oracle-btn');btn.disabled=false;btn.textContent='Find My Escape ✦';
   document.getElementById('oracle-input').value='';
   document.getElementById('char-count').textContent='0 / 400';
+  resetTheme();
   document.getElementById('hero').scrollIntoView({behavior:'smooth'});
 };
 

@@ -42,7 +42,15 @@ FORMAT YOUR RESPONSE AS JSON with this exact structure (no markdown, pure JSON):
   "best_time": "month range",
   "vibe_tags": ["tag1", "tag2", "tag3"],
   "package_nudge": "one gentle, non-salesy line that makes them want to book",
-  "destinations": ["dest1", "dest2", "dest3"]
+  "destination_key": "one word lowercase key matching the primary destination — must be one of: santorini, maldives, kyoto, morocco, dubai, coorg, bali, europe, japan, iceland, beach, mountains, paris, newzealand, swiss. Pick the closest match.",
+  "theme": {
+    "accent": "#hexcolor — the soul color of this destination (e.g. Santorini = #4A90D9 deep aegean blue, Maldives = #00B4CC turquoise, Kyoto = #C084A0 sakura pink, Morocco = #E8922A spice orange, Dubai = #D4A840 gold sand, Coorg = #5A8A3C forest green, Bali = #E07B4A terracotta, Iceland = #7AB8D4 glacier blue)",
+    "accent2": "#hexcolor — secondary complementary color",
+    "bg_dark": "#hexcolor — deep background color tinted toward destination palette",
+    "bg_mid": "#hexcolor — mid background color",
+    "overlay_opacity": "0.0 to 0.4 — how much to tint the hero image with accent color",
+    "font_mood": "one of: sharp, flowing, ancient, modern, warm, cold"
+  }
 }
 
 Always search first. Pull real insights. Make it feel like the user is reading the most expensive travel magazine in the world, curated just for them.`,
