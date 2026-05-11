@@ -25,7 +25,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --gold:#C9A96E;--gold2:#E8C98A;--sand:#F5EFE6;--deep:#0F0A06;--ocean:#1A1008;
-  --text:#1A1008;--muted:#4A3828;--muted2:#8A7060;
+  --text:rgba(245,239,230,0.92);--muted:rgba(245,239,230,0.42);--muted2:rgba(245,239,230,0.2);
   --radius:18px;--transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
 }
 html{scroll-behavior:smooth}
@@ -44,10 +44,10 @@ body.hovering #cur-r{width:56px;height:56px;border-color:rgba(201,169,110,0.8)}
 /* NAV */
 #nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.8rem 5rem;display:flex;justify-content:space-between;align-items:center;transition:var(--transition)}
 #nav.solid{background:rgba(15,10,6,0.97);backdrop-filter:blur(24px);padding:1rem 5rem;border-bottom:1px solid rgba(201,169,110,0.08)}
-.logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:0.1em;cursor:none}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:0.1em;cursor:none;color:var(--sand)}
 .logo em{color:var(--gold);font-style:italic}
 .nav-links{display:flex;align-items:center;gap:2.5rem}
-.nav-links a{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);transition:color 0.3s;cursor:none}
+.nav-links a{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,239,230,0.55);transition:color 0.3s;cursor:none}
 .nav-links a:hover{color:var(--gold)}
 .nav-cta{background:var(--gold);border:none;border-radius:50px;padding:0.55rem 1.5rem;font-family:'Jost',sans-serif;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--deep);cursor:none;transition:var(--transition);font-weight:400}
 .nav-cta:hover{background:var(--gold2);transform:translateY(-1px)}
@@ -151,8 +151,8 @@ body.hovering #cur-r{width:56px;height:56px;border-color:rgba(201,169,110,0.8)}
 .usp-cell{padding:2.5rem 2rem;position:relative;text-align:center}
 .usp-cell:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:rgba(245,239,230,0.06)}
 .usp-icon{font-size:1.8rem;margin-bottom:1rem}
-.usp-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;color:var(--sand);margin-bottom:0.6rem}
-.usp-desc{font-size:0.75rem;line-height:1.8;color:var(--muted)}
+.usp-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;color:#F5EFE6;margin-bottom:0.6rem}
+.usp-desc{font-size:0.75rem;line-height:1.8;color:rgba(245,239,230,0.55)}
 
 /* DESTINATIONS BENTO — visual upgrade */
 #destinations{background:linear-gradient(180deg,var(--deep),#0e0804);padding:8rem 5rem}
@@ -217,7 +217,7 @@ body.hovering #cur-r{width:56px;height:56px;border-color:rgba(201,169,110,0.8)}
 .pkg-nights{position:absolute;bottom:1rem;right:1rem;font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;color:#fff;line-height:1;text-align:right}
 .pkg-nights span{font-family:'Jost',sans-serif;font-size:0.6rem;font-weight:300;display:block;opacity:0.7;letter-spacing:0.1em}
 .pkg-body{padding:1.5rem 1.6rem}
-.pkg-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--sand);margin-bottom:0.2rem}
+.pkg-name{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:#F5EFE6;margin-bottom:0.2rem}
 .pkg-loc{font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(201,169,110,0.6);margin-bottom:1rem}
 .pkg-inc{list-style:none;margin-bottom:1.2rem}
 .pkg-inc li{font-size:0.74rem;color:var(--muted);padding:0.18rem 0;display:flex;align-items:center;gap:0.5rem}
@@ -268,7 +268,7 @@ body.hovering #cur-r{width:56px;height:56px;border-color:rgba(201,169,110,0.8)}
 .srv{padding:2.8rem 2.5rem;background:rgba(245,239,230,0.015);transition:background 0.4s;position:relative;overflow:hidden}
 .srv:hover{background:rgba(201,169,110,0.03)}
 .srv-n{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:rgba(201,169,110,0.08);line-height:1;margin-bottom:1.2rem}
-.srv-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--sand);margin-bottom:0.7rem}
+.srv-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:#F5EFE6;margin-bottom:0.7rem}
 .srv-desc{font-size:0.76rem;line-height:1.85;color:var(--muted)}
 
 /* STICKY WA + CONVERSION — fixes "no sticky button" */
@@ -388,6 +388,41 @@ body{transition:opacity 0.5s ease}
   #cursor,#cur,#cur-r{display:none}*{cursor:auto!important}
   button,a,.mp,.dt{cursor:pointer!important}
 }
+
+/* VISIBILITY FIXES */
+#nav .logo{color:#F5EFE6 !important;font-weight:400;font-size:1.6rem;letter-spacing:0.12em}
+#nav .logo em{color:var(--gold) !important;font-style:italic;font-weight:600}
+.h-title{color:#F5EFE6 !important;text-shadow:0 2px 20px rgba(0,0,0,0.6)}
+.h-sub{color:rgba(245,239,230,0.7) !important}
+.oracle-ta{color:#F5EFE6 !important}
+.oracle-ta::placeholder{color:rgba(245,239,230,0.25) !important}
+.feat-title{color:#F5EFE6 !important}
+.feat-desc{color:rgba(245,239,230,0.55) !important}
+.modal-title{color:#F5EFE6 !important}
+.pkg-name{color:#F5EFE6 !important}
+.srv-title{color:#F5EFE6 !important}
+.test-quote{color:rgba(245,239,230,0.72) !important}
+.ts-title{color:#F5EFE6 !important}
+.usp-title{color:#F5EFE6 !important}
+.foot-logo{color:#F5EFE6 !important}
+.foot-logo em{color:var(--gold) !important}
+.dt-name{color:#F5EFE6 !important;text-shadow:0 2px 20px rgba(0,0,0,0.6)}
+.feat-ctry,.dt-ctry,.pkg-loc,.rev-dest-badge,.test-dest,.or-src,.mag-source{color:var(--gold) !important}
+/* USP badge */
+.usp-badge span{color:var(--gold) !important}
+/* Trust bar */
+.tb-num{color:var(--gold) !important}
+.tb-label{color:rgba(245,239,230,0.35) !important}
+/* Result headline */
+.or-headline{color:#F5EFE6 !important}
+.or-narrative{color:rgba(245,239,230,0.78) !important}
+/* Section titles on dark sections get light color */
+#destinations .sec-title,#packages .sec-title,#testimonials .sec-title,
+#services .sec-title,#booking .sec-title,#usp .sec-title,
+#trust-signals .sec-title,#reviews .sec-title,#features .sec-title{color:#F5EFE6 !important}
+#destinations .sec-pre,#packages .sec-pre,#testimonials .sec-pre,
+#services .sec-pre,#booking .sec-pre,#usp .sec-pre,
+#trust-signals .sec-pre,#reviews .sec-pre{color:var(--gold) !important}
 </style>
 </head>
 <body>
