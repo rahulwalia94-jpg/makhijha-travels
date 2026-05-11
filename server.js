@@ -1,10 +1,15 @@
 const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
+const https = require('https');
+const http = require('http');
 
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Issue 5 fix: Health ping endpoint
+app.get('/ping', (req, res) => res.json({ status: 'alive', ts: Date.now() }));
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -127,4 +132,20 @@ Use rich gradient colors. Be poetic with taglines.`
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Makhijha Travels running on port ${PORT}`));
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+
+app.listen(PORT, () => {
+  console.log(`Makhijha Travels running on port ${PORT}`);
+
+  // Issue 5 fix: Self-ping every 14 min to prevent Render free tier cold starts
+  // Render spins down after 15 min of inactivity — we ping at 14 to stay warm
+  setInterval(() => {
+    const url = `${RENDER_URL}/ping`;
+    const client = url.startsWith('https') ? https : http;
+    client.get(url, (res) => {
+      console.log(`Keep-alive ping: ${res.statusCode}`);
+    }).on('error', (e) => {
+      console.log(`Ping failed (non-critical): ${e.message}`);
+    });
+  }, 14 * 60 * 1000); // 14 minutes
+});
